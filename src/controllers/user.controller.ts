@@ -57,20 +57,5 @@ export class MemberController {
 
         res.status(200).json({err: false, msg: "Member updated"});
     };
-
-    // static deleteMember = async (req: Request, res: Response) => {
-    //     //get the id from the url
-    //     const id = parseInt(req.params.body, 10);
-
-    //     try {
-    //         await MemberController.repository.findOne({where: {id: id} , select: ['id']});
-    //     } catch (error) {
-    //         return res.status(404).json({err: true, msg:"Member not found"});
-    //     }
-    //     MemberController.repository.delete(id);
-
-    //     //after all, send a 204 status(no content but acceptes) response
-    //     res.status(204).json({err: false, msg: "Member deleted"});
-    // };
 };
 export default MemberController;

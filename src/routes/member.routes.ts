@@ -18,7 +18,4 @@ memberRoutes.get('/', [checkJwt, checkRole])
 //Edit logedin user
 .put('/',[checkJwt, checkMdp, memberValidation(ROLES.MEMBER, true)], MemberController.editMember)
 
-//Delete one user
-.delete('/:id',[checkJwt, checkRole])
-
 export default memberRoutes;

@@ -14,4 +14,5 @@ authRoutes.post("/login", [checkLogedOut, checkMdp], AuthController.login)
 //logout
 .post("/logout", [checkJwt], AuthController.logout)
 
+.delete('/delete-my-account', [checkJwt, checkMdp], AuthController.deleteMyAccount)
 export default authRoutes;
