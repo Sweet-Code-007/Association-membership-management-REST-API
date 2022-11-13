@@ -3,7 +3,7 @@ import MemberController from '../controllers/user.controller';
 import { ROLES } from '../database';
 import { checkJwt, checkLogedOut } from '../middlewares/checkJwt';
 import checkRole from '../middlewares/checkRole';
-import {memberValidation} from '../middlewares/memberValidation'
+import {checkMdp, memberValidation} from '../middlewares/memberValidation'
 
 const memberRoutes = Router();
 
@@ -15,8 +15,8 @@ memberRoutes.get('/', [checkJwt, checkRole])
 
 .post('/signin', [checkLogedOut, memberValidation(ROLES.MEMBER)], MemberController.newMember)
 
-//Edit one user
-.put('/:id',[checkJwt, checkRole])
+//Edit logedin user
+.put('/',[checkJwt, checkMdp, memberValidation(ROLES.MEMBER, true)], MemberController.editMember)
 
 //Delete one user
 .delete('/:id',[checkJwt, checkRole])

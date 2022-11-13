@@ -4,16 +4,23 @@ import { FindOneOptions } from "typeorm";
 import { AppDataSource, Member, ROLES } from "../database";
 import getErrorObject from "../validator/errorInClassValidator";
 
-export function memberValidation(role: ROLES, update= false) {
+export function memberValidation(role: ROLES, update= false, mdpOnly= false) {
     return async (req: Request, res: Response, next: NextFunction) => {
         const { firstName, lastName, mail, password, newPassword } = req.body as { [key: string]: string };
         
         res.locals.member = new Member()
-            res.locals.member.firstName = (firstName) ? firstName.trim() : firstName;
-            res.locals.member.lastName = (lastName) ? lastName.trim() : lastName;
-            res.locals.member.mail = (mail) ? mail.trim() : mail;
-            res.locals.member.password =  (update) ? newPassword : password;
-            res.locals.member.role= role;
+            res.locals.member.firstName = (firstName!=undefined && !mdpOnly) ? firstName.trim() : undefined;
+            res.locals.member.lastName = (lastName && !mdpOnly) ? lastName.trim() : undefined;
+            res.locals.member.mail = (mail && !mdpOnly) ? mail.trim() : undefined;
+            if(update){
+                if(mdpOnly)
+                    res.locals.member.password= newPassword;
+                else
+                    res.locals.member.password= undefined;
+                }
+            else
+                res.locals.member.password =  password;
+            res.locals.member.role= (update) ? undefined : role;
 
             if(update)
                 res.locals.member.id= res.locals?.jwtPayload?.userId;
@@ -39,7 +46,7 @@ export async function checkMdp(req: Request, res: Response, next: NextFunction){
         let member!: Member;
         let option= { where: { mail: mail.trim() }, select: ['id','password','role'] } as FindOneOptions
         if(userId) option.where= { id: userId }
-    console.log(userId, option);
+
         try {
             member = await MemberRepository.findOneOrFail(option);
         } catch (error) {

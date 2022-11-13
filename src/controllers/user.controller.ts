@@ -50,7 +50,7 @@ export class MemberController {
 
     static editMember = async (req: Request, res: Response) => {
         try {
-            await MemberController.repository.update({id: req.params.id}, res.locals.member);
+            await MemberController.repository.update({id: res.locals.member.id}, res.locals.member);
         } catch (e) {
             return res.status(500).json({err: true, msg: 'Internal server error'});
         }
