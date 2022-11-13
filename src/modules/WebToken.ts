@@ -4,7 +4,7 @@ import { process } from '../config'
 export class WebToken{
     static #secret: string;
     static{
-        WebToken.#secret= process.env.JWT_SECRET!; 
+        WebToken.#secret= process.env.JWT_KEY!; 
     }
 
     static sign(object: Object, options: SignOptions = {expiresIn: 7200}){

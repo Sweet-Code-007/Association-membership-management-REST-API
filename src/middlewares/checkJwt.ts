@@ -35,7 +35,6 @@ export const checkLogedOut= (req: Request, res: Response, next: NextFunction)=>{
 
     try {
         jwtPayload = WebToken.verify(token);
-        res.locals.jwtPayload = jwtPayload;
     } catch (error) {
         //if the token is'nt valid or doesn't exist then we can create an account
         return next();
