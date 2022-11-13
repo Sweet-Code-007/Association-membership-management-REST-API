@@ -14,7 +14,7 @@ class AuthController {
         const MemberRepository = AppDataSource.getRepository(Member);
         let member!: Member;
         try {
-            member = await MemberRepository.findOneOrFail({ where: { mail: mail }, select: ['id','password','role'] });
+            member = await MemberRepository.findOneOrFail({ where: { mail: mail.trim() }, select: ['id','password','role'] });
         } catch (error) {
             return res.status(404).json({err: true, msg:'Member not found'});
         }
