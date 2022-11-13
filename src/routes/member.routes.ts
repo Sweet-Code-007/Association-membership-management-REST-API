@@ -3,7 +3,7 @@ import MemberController from '../controllers/user.controller';
 import { ROLES } from '../database';
 import { checkJwt, checkLogedOut } from '../middlewares/checkJwt';
 import checkRole from '../middlewares/checkRole';
-import memberValidation from '../middlewares/memberValidation'
+import {memberValidation} from '../middlewares/memberValidation'
 
 const memberRoutes = Router();
 

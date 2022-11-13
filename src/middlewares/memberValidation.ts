@@ -1,17 +1,18 @@
 import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
-import { Member, ROLES } from "../database";
+import { FindOneOptions } from "typeorm";
+import { AppDataSource, Member, ROLES } from "../database";
 import getErrorObject from "../validator/errorInClassValidator";
 
-export default function memberValidation(role: ROLES, update= false) {
+export function memberValidation(role: ROLES, update= false) {
     return async (req: Request, res: Response, next: NextFunction) => {
-        const { firstName, lastName, mail, password } = req.body as { [key: string]: string };
+        const { firstName, lastName, mail, password, newPassword } = req.body as { [key: string]: string };
         
         res.locals.member = new Member()
             res.locals.member.firstName = (firstName) ? firstName.trim() : firstName;
             res.locals.member.lastName = (lastName) ? lastName.trim() : lastName;
             res.locals.member.mail = (mail) ? mail.trim() : mail;
-            res.locals.member.password = password;
+            res.locals.member.password =  (update) ? newPassword : password;
             res.locals.member.role= role;
 
             if(update)
@@ -24,4 +25,35 @@ export default function memberValidation(role: ROLES, update= false) {
             
         next();
     }
+}
+
+export async function checkMdp(req: Request, res: Response, next: NextFunction){
+    const {userId}= res.locals.jwtPayload || {userId: undefined};
+    
+    const { mail, password } = req.body;
+        if (!mail || !password)
+            return res.status(401).json({err: true, msg: 'You should provide a value to "mail" and "password" field'});
+
+        //get Member from databasse
+        const MemberRepository = AppDataSource.getRepository(Member);
+        let member!: Member;
+        let option= { where: { mail: mail.trim() }, select: ['id','password','role'] } as FindOneOptions
+        if(userId) option.where= { id: userId }
+    console.log(userId, option);
+        try {
+            member = await MemberRepository.findOneOrFail(option);
+        } catch (error) {
+            return res.status(404).json({err: true, msg:'Member not found'});
+        }
+
+        //check if encrypted password match
+        const match= await member.checkIfPasswordMatch(password);        
+        if (!match)
+            return res.status(401).json({err: true, msg: 'Wrong password'});
+
+        res.locals= { jwtPayload: {...res.locals.jwtPayload} }
+        res.locals.jwtPayload.userId= member.id;
+        res.locals.jwtPayload.role= member.role;
+
+        next();
 }

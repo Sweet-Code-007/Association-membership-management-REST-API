@@ -71,7 +71,7 @@ export class Member {
             this.password= await CryptSystem.hash(this.password)
     }
 
-    checkIfPasswordMatch(encryptedPswd: string){
-        return CryptSystem.checkUnencryptedMatchWithCrypted(this.password, encryptedPswd);
+    checkIfPasswordMatch(unencryptedPswd: string){
+        return CryptSystem.checkUnencryptedMatchWithCrypted(unencryptedPswd, this.password);
     }
 }

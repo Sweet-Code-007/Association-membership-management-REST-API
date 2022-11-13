@@ -4,19 +4,14 @@ import MemberController from '../controllers/user.controller';
 import { ROLES } from '../database';
 import { checkJwt, checkLogedOut } from '../middlewares/checkJwt';
 import checkRole from '../middlewares/checkRole';
-import memberValidation from '../middlewares/memberValidation'
+import { checkMdp } from '../middlewares/memberValidation';
 
 const authRoutes = Router();
 
-authRoutes.post("/login", [checkLogedOut], AuthController.login)
-
-// create a new admin
-// .post('/newAdmin', [checkJwt, checkIfAdmin], UserController.newUser(true))
-
-
+authRoutes.post("/login", [checkLogedOut, checkMdp], AuthController.login)
 
 //change my password
-.post("/change-password", [checkJwt], AuthController.changePassword)
+.post("/change-password", [checkJwt, checkMdp], AuthController.changePassword)
 
 //logout
 .post("/logout", [checkJwt], AuthController.logout)
