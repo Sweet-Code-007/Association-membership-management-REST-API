@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-//for book: [''createdAt', 'title']
 export default function normalizeQuery(sortAccept: string[]){
     return function(req: Request, res: Response, next: NextFunction){
         let { page, perPage, sortBy, order } = req.query;
@@ -8,6 +7,7 @@ export default function normalizeQuery(sortAccept: string[]){
         if(!page || parseInt(page as string)<1) req.query.page= '1';
         if(!perPage || parseInt(perPage as string)<1) req.query.perPage= '10';
         if(!sortBy) req.query.sortBy = sortAccept[0];
+        if(order) order= (order as string).toUpperCase()
 
         if(
             Number.isNaN(parseInt(req.query.page as string)) || Number.isNaN(parseInt(req.query.perPage as string))
@@ -17,7 +17,7 @@ export default function normalizeQuery(sortAccept: string[]){
 
         if(order!='ASC' && order!='DESC'){
             //keys ending with 'At': createdAt, updatedAt,....
-            if(/\wAt$/.test(req.query.sortBy as string))
+            if(/\wDate$/.test(req.query.sortBy as string))
                 req.query.order= 'DESC'
             else 
                 req.query.order= 'ASC'

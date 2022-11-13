@@ -4,14 +4,12 @@ import { ROLES } from '../database';
 import { checkJwt, checkLogedOut } from '../middlewares/checkJwt';
 import checkRole from '../middlewares/checkRole';
 import {checkMdp, memberValidation} from '../middlewares/memberValidation'
+import normalizeQuery from '../middlewares/queryNormalize';
 
 const memberRoutes = Router();
 
-//Get all users
-memberRoutes.get('/', [checkJwt, checkRole])
-
-// Get one user
-.get('/:id', [checkJwt, checkRole],)
+//Get members
+memberRoutes.get('/', [normalizeQuery(['inscriptionDate','role','firstName', 'lastName'])], MemberController.getAll)
 
 .post('/signin', [checkLogedOut, memberValidation(ROLES.MEMBER)], MemberController.newMember)
 
