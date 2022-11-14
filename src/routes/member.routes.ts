@@ -8,8 +8,10 @@ import normalizeQuery from '../middlewares/queryNormalize';
 
 const memberRoutes = Router();
 
-//Get members
-memberRoutes.get('/', [normalizeQuery(['inscriptionDate','role','firstName', 'lastName'])], MemberController.getAll)
+
+memberRoutes/* .get('/:id', MemberController.getById) */
+
+.get('/', [normalizeQuery(['inscriptionDate','role','firstName', 'lastName'])], MemberController.getAll)
 
 .post('/signin', [checkLogedOut, memberValidation(ROLES.MEMBER)], MemberController.newMember)
 

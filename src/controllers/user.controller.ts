@@ -5,6 +5,20 @@ import { Member, AppDataSource } from "../database";
 export class MemberController {
     static repository = AppDataSource.getRepository(Member);
 
+    // static getById = async(req: Request, res: Response)=>{
+    //     try {
+    //         res.status(200).json({
+    //             err: false,
+    //             data: await MemberController.repository.createQueryBuilder('m')
+                    
+    //         })
+    //     } catch (error) {
+    //         console.log(error)
+    //         res.status(500).json({ err: true, msg: 'Internal server error' });
+        
+    //     }
+    // }
+
     static getAll = async (req: Request, res: Response) => {
         try {
             const { page, perPage, sortBy, order, role } = req.query;
